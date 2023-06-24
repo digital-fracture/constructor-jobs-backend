@@ -60,7 +60,7 @@ def generate_pdf(
     c.setFont("Zelek Bold", 80)
     c.drawCentredString(750, 1700, speciality)
 
-    c.setFont("Zelek Bold", 32)
+    c.setFont("Zelek Bold", 24)
 
     text_object = c.beginText(171, 1140)
     text_object.textLines("\n".join(split_multiline_text(requirements)))

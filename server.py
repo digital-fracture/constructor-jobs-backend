@@ -3,7 +3,7 @@ from flask_cors import CORS
 
 from PIL import UnidentifiedImageError
 
-from engine.model import predict
+from engine.model import model
 from engine.table import process_input, process_output
 from engine.pdf import generate_pdf
 from misc.util import get_temp_file_path
@@ -34,7 +34,7 @@ def file():
 
     contents = {key: [] for key in ("requirements", "conditions", "notes")}
     for text in input_data:
-        for key, value in predict(text).items():
+        for key, value in model.predict(text).items():
             contents[key].append(value)
 
     return send_file(
@@ -47,18 +47,17 @@ def file():
 
 @app.route("/pdf", methods=["POST"])
 def json():
-    print(request.files.to_dict())
-    print(request.form.to_dict())
-
     try:
         kwargs: dict[str, ...] = request.form.to_dict()
 
-        kwargs.update(predict(kwargs["description"]))
+        kwargs.update(model.predict(kwargs["description"]))
         kwargs.pop("description")
 
         if request.files:
             kwargs["image_path"] = get_temp_file_path(request.files.getlist("file")[0].filename.split(".")[-1])
             request.files.getlist("file")[0].save(kwargs["image_path"])
+
+        kwargs.pop("file", None)
 
         pdf_path = generate_pdf(**kwargs)
     except (TypeError, KeyError) as e:
@@ -77,7 +76,7 @@ def json():
 
 @app.route("/api", methods=["POST"])
 def api():
-    return jsonify(predict(request.json["text"]))
+    return jsonify(model.predict(request.json["text"]))
 
 
 if __name__ == "__main__":

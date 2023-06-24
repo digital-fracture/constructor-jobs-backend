@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from openpyxl.reader.excel import load_workbook
-from openpyxl.styles import Font
+from openpyxl.styles import Font, Alignment
 from openpyxl import Workbook
 from openpyxl.worksheet.worksheet import Worksheet
 
@@ -31,6 +31,7 @@ def process_output(contents: dict[str, list[str, ...]]) -> Path:
     for row in ws.rows:
         for cell in row:
             cell.font = regular_font
+            cell.alignment = Alignment(wrap_text=True)
 
     for cell in next(ws.rows):
         cell.font = title_font

@@ -9,6 +9,10 @@ flask-cors = "*"
 openpyxl = "*"
 reportlab = "*"
 pillow = "*"
+numpy = "*"
+torch = "*"
+catboost = "*"
+transformers = "*"
 
 [dev-packages]
 
